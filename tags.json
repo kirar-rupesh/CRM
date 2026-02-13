@@ -1,0 +1,10 @@
+[
+  { "name": "IT Services", "createdAt": "2026-01-01T09:00:00.000Z" },
+  { "name": "Healthcare", "createdAt": "2026-01-02T09:00:00.000Z" },
+  { "name": "FinTech", "createdAt": "2026-01-03T09:00:00.000Z" },
+  { "name": "Manufacturing", "createdAt": "2026-01-04T09:00:00.000Z" },
+  { "name": "Startup", "createdAt": "2026-01-05T09:00:00.000Z" },
+  { "name": "Banking", "createdAt": "2026-01-06T09:00:00.000Z" },
+  { "name": "Retail", "createdAt": "2026-01-07T09:00:00.000Z" },
+  { "name": "Education", "createdAt": "2026-01-08T09:00:00.000Z" }
+]
