@@ -295,26 +295,30 @@ router.put("/:id", async (req, res) => {
 
     const allowedPriorities = ["High", "Medium", "Low"];
 
-    // ✅ Required field validations (ALL required)
-    if (!name || typeof name !== "string") {
+    
+    //  Validate only if fields are provided
+    if (name !== undefined && typeof name !== "string") {
       return res.status(400).json({
-        error: "Invalid input: 'name' is required and must be a string."
+        error: "Invalid input: 'name' must be a string."
       });
     }
 
-    if (!source || !allowedSources.includes(source)) {
+    if (source !== undefined && !allowedSources.includes(source)) {
       return res.status(400).json({
         error: "Invalid input: 'source' must match predefined values."
       });
     }
 
-    if (!salesAgent || !mongoose.Types.ObjectId.isValid(salesAgent)) {
+    if (
+      salesAgent !== undefined &&
+      !mongoose.Types.ObjectId.isValid(salesAgent)
+    ) {
       return res.status(400).json({
         error: "Invalid input: 'salesAgent' must be a valid ObjectId."
       });
     }
 
-    if (!status || !allowedStatuses.includes(status)) {
+    if (status !== undefined && !allowedStatuses.includes(status)) {
       return res.status(400).json({
         error:
           "Invalid input: 'status' must be one of ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Closed']."
@@ -322,16 +326,15 @@ router.put("/:id", async (req, res) => {
     }
 
     if (
-      timeToClose === undefined ||
-      typeof timeToClose !== "number" ||
-      timeToClose <= 0
+      timeToClose !== undefined &&
+      (typeof timeToClose !== "number" || timeToClose <= 0)
     ) {
       return res.status(400).json({
         error: "Invalid input: 'timeToClose' must be a positive number."
       });
     }
 
-    if (!priority || !allowedPriorities.includes(priority)) {
+    if (priority !== undefined && !allowedPriorities.includes(priority)) {
       return res.status(400).json({
         error:
           "Invalid input: 'priority' must be one of ['High', 'Medium', 'Low']."
@@ -346,24 +349,29 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    // ✅ Check if SalesAgent exists
-    const existingAgent = await SalesAgents.findById(salesAgent);
-    if (!existingAgent) {
-      return res.status(404).json({
-        error: `Sales agent with ID '${salesAgent}' not found.`
-      });
+    
+    // Check SalesAgent only if provided
+    if (salesAgent !== undefined) {
+      const existingAgent = await SalesAgents.findById(salesAgent);
+      if (!existingAgent) {
+        return res.status(404).json({
+          error: `Sales agent with ID '${salesAgent}' not found.`
+        });
+      }
     }
 
-    // ✅ Update lead
-    existingLead.name = name;
-    existingLead.source = source;
-    existingLead.salesAgent = salesAgent;
-    existingLead.status = status;
-    existingLead.tags = tags || [];
-    existingLead.timeToClose = timeToClose;
-    existingLead.priority = priority;
-    existingLead.updatedAt = new Date();
+    
+    // Update only provided fields
 
+    if (name !== undefined) existingLead.name = name;
+    if (source !== undefined) existingLead.source = source;
+    if (salesAgent !== undefined) existingLead.salesAgent = salesAgent;
+    if (status !== undefined) existingLead.status = status;
+    if (tags !== undefined) existingLead.tags = tags;
+    if (timeToClose !== undefined) existingLead.timeToClose = timeToClose;
+    if (priority !== undefined) existingLead.priority = priority;
+    existingLead.updatedAt = new Date();
+  
     await existingLead.save();
 
     await existingLead.populate("salesAgent", "name");
