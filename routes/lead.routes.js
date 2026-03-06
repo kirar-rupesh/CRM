@@ -11,11 +11,6 @@ const router = express.Router();
 
 
 
-
-
-
-
-
 router.get("/", async (req, res) => {
   try {
     const { salesAgent, status, tags, source } = req.query;
@@ -399,6 +394,44 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+/////////////////////////////////////////
+// DELETE /leads/:id  (Delete Lead)
+/////////////////////////////////////////
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const leadId = req.params.id;
+
+    // ✅ Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(leadId)) {
+      return res.status(400).json({
+        error: "Invalid input: Lead ID must be a valid ObjectId."
+      });
+    }
+
+    // ✅ Find and delete lead
+    const deletedLead = await Lead.findByIdAndDelete(leadId);
+
+    // ✅ If lead not found
+    if (!deletedLead) {
+      return res.status(404).json({
+        error: `Lead with ID '${leadId}' not found.`
+      });
+    }
+
+    // ✅ Success response
+    return res.status(200).json({
+      message: "Lead deleted successfully."
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: "Server Error",
+      message: error.message
+    });
+  }
+});
+
+// Example // http://localhost:5000/leads/6997dcf67a4c80d344cf92f3
 
 module.exports = router;

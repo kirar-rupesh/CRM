@@ -3,6 +3,9 @@ const fs = require("fs");
 const path = require("path");
 
 const leadRoutes = require("./routes/lead.routes");
+const salesAgentRoutes = require("./routes/salesAgent.routes");
+const commentsRoutes = require("./routes/comments.routes.js");
+const reportingRoutes = require("./routes/reports.routes.js");
 const express = require("express");
 const app = express();
 app.use(express.json());
@@ -41,10 +44,10 @@ app.use(cors(corsOptions));
 })();
 
 async function runSeed() {
-  await seedSalesAgents();
-  await seedLeads();
-  await seedTags();
-  await seedComments();
+  // await seedSalesAgents();
+  // await seedLeads();
+  // await seedTags();
+  // await seedComments();
 }
 
 // runSeed();
@@ -54,7 +57,13 @@ async function runSeed() {
 app.use("/leads", leadRoutes);
 
 
+app.use("/agents", salesAgentRoutes);
 
+
+app.use("/comments", commentsRoutes);
+
+
+app.use("/report", reportingRoutes);
 
 
 // ====== START SERVER =======
